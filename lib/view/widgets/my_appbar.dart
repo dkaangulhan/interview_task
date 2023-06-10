@@ -29,7 +29,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      child: Center(child: title),
+      child: SafeArea(child: Align(alignment: Alignment.center, child: title)),
     );
   }
 }

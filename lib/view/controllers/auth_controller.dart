@@ -17,23 +17,24 @@ class AuthController extends GetxController {
     required String username,
     required String password,
   }) async {
-    //input check
-    if (username.isEmpty) {}
-    if (password.isEmpty) {}
-
-    http.Response response = await _authService.login(
-      username: username,
-      password: password,
-    );
-
-    if (!checkStatusCode(response.statusCode)) {
+    try {
+      http.Response response = await _authService.login(
+        username: username,
+        password: password,
+      );
+      if (!checkStatusCode(response.statusCode)) {
+        return ResponseModel(
+          message: response.body,
+          isError: true,
+        );
+      }
+      final body = json.decode(response.body);
+      return ResponseModel(message: body['token']);
+    } catch (e) {
       return ResponseModel(
-        message: response.body,
+        message: 'Error occurred while logging in!',
         isError: true,
       );
     }
-
-    final body = json.decode(response.body);
-    return ResponseModel(message: body['token']);
   }
 }

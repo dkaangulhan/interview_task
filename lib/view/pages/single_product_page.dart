@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nano_health/constants/color_constants.dart';
-import 'package:nano_health/constants/sample_constants.dart';
 import 'package:nano_health/data/models/product_model.dart';
 import 'package:nano_health/view/controllers/product_controller.dart';
 import 'package:nano_health/view/widgets/pill_shaped_button.dart';
@@ -14,12 +13,15 @@ class SingleProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final longestSide = MediaQuery.of(context).size.longestSide;
     return Scaffold(
       body: Stack(
         children: [
           SizedBox(
             height: Get.height,
-            child: const PageBuilder(),
+            child: PageBuilder(
+              bottomSheetClosedHeight: longestSide > 600.0 ? 240.0 : 220.0,
+            ),
           ),
           Container(
             height: Get.height / 5,
@@ -51,8 +53,12 @@ class SingleProductPage extends StatelessWidget {
                         onTap: () {
                           Get.back();
                         },
+                        size: longestSide > 600 ? 40.0 : 32.0,
                       ),
-                      const BorderIcon(iconData: Icons.more_vert),
+                      BorderIcon(
+                        iconData: Icons.more_vert,
+                        size: longestSide > 600 ? 40.0 : 32.0,
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -77,8 +83,10 @@ class SingleProductPage extends StatelessWidget {
 }
 
 class PageBuilder extends StatefulWidget {
+  final bottomSheetClosedHeight;
   const PageBuilder({
     super.key,
+    this.bottomSheetClosedHeight = 220.0,
   });
 
   @override
@@ -88,11 +96,11 @@ class PageBuilder extends StatefulWidget {
 class _PageBuilderState extends State<PageBuilder>
     with SingleTickerProviderStateMixin {
   final bsOpenHeight = 320.0;
-  final bsClosedHeight = 220.0;
+  late final bsClosedHeight;
 
   // Is bottom sheet open
   bool isBSOpen = false;
-  double bottomSheetHeight = 220.0;
+  double bottomSheetHeight = 240.0;
   final bsBorderRadius = 32.0;
 
   late final AnimationController _controller;
@@ -133,12 +141,16 @@ class _PageBuilderState extends State<PageBuilder>
         }
       },
     );
+
+    bsClosedHeight = widget.bottomSheetClosedHeight;
+    bottomSheetHeight = widget.bottomSheetClosedHeight;
   }
 
   @override
   Widget build(BuildContext context) {
     ProductController productController = Get.find();
     ProductModel? product = productController.currentProduct;
+    final longestSide = MediaQuery.of(context).size.longestSide;
     return Stack(
       children: [
         Container(
@@ -149,7 +161,7 @@ class _PageBuilderState extends State<PageBuilder>
               image: NetworkImage(
                 product!.image,
               ),
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
         ),
@@ -229,26 +241,23 @@ class _PageBuilderState extends State<PageBuilder>
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           BorderIcon(
                             iconData: Icons.ios_share,
                             color: myThemeBlue,
-                            size: 42.0,
+                            size: longestSide > 600 ? 55 : 32,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 40.0,
                           ),
                           Expanded(
                             child: PillShapedButton(
                               label: 'Order Now',
-                              height: 42.0,
+                              height: longestSide > 600 ? 55 : 32,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 14.0,
                     ),
                     //  Description
                     Expanded(
@@ -256,6 +265,7 @@ class _PageBuilderState extends State<PageBuilder>
                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
                         child: ListView(
                           physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.only(top: 14.0),
                           children: [
                             const Text(
                               'Description',

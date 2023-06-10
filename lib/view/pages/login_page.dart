@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     Get.put(AuthController());
+    final longestSide = MediaQuery.of(context).size.longestSide;
     return Scaffold(
       body: LayoutBuilder(
         builder: (_, constraints) {
@@ -56,8 +57,8 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Image.asset(
                                     'assets/logo.png',
                                     fit: BoxFit.contain,
-                                    width: 214.0 * 414.0 / Get.width,
-                                    height: 117.0 * 411.0 / Get.height,
+                                    width: longestSide > 600 ? 240.0 : 117.0,
+                                    height: 117.0,
                                   ),
                                 ),
                                 Positioned(

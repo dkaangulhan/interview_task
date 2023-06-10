@@ -22,15 +22,22 @@ class ProductController extends GetxController {
   set setCurrentProduct(ProductModel model) => _currentProduct = model;
 
   Future<ResponseModel> getProducts() async {
-    http.Response response = await _productService.getProducts();
-    if (!checkStatusCode(response.statusCode)) {
+    try {
+      http.Response response = await _productService.getProducts();
+      if (!checkStatusCode(response.statusCode)) {
+        return ResponseModel(
+          message: 'Error occurred while fetching products!',
+          isError: true,
+        );
+      }
+      final body = json.decode(response.body);
+      _productList.value = ProductModel.fromList(body);
+      return ResponseModel(message: 'success');
+    } catch (e) {
       return ResponseModel(
         message: 'Error occurred while fetching products!',
         isError: true,
       );
     }
-    final body = json.decode(response.body);
-    _productList.value = ProductModel.fromList(body);
-    return ResponseModel(message: 'success');
   }
 }

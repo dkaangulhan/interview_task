@@ -54,7 +54,7 @@ class ProductItem extends StatelessWidget {
                   children: [
                     Image.network(
                       product.image,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       width: Get.width,
                     ),
                     //  Price text

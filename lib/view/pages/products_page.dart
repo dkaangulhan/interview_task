@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nano_health/constants/color_constants.dart';
 import 'package:nano_health/view/controllers/product_controller.dart';
 import 'package:nano_health/view/widgets/my_appbar.dart';
 import 'package:nano_health/view/widgets/product_item.dart';
@@ -16,7 +17,7 @@ class ProductsPage extends StatelessWidget {
       appBar: MyAppBar(
         size: Size(
           Get.width,
-          Get.height / 8,
+          longestSide > 600 ? 70.0 : 70.0,
         ),
         title: const Text(
           'All Products',
@@ -27,10 +28,35 @@ class ProductsPage extends StatelessWidget {
         ),
       ),
       extendBodyBehindAppBar: true,
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-      ]),
+      bottomNavigationBar: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 50.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Image.asset(
+              'assets/home_icon.png',
+              color: myThemeBlue,
+              fit: BoxFit.fill,
+            ),
+            Image.asset(
+              'assets/cart_icon.png',
+              color: const Color(0xFFBFC2C8),
+              fit: BoxFit.fill,
+            ),
+            Image.asset(
+              'assets/like_icon.png',
+              color: const Color(0xFFBFC2C8),
+              fit: BoxFit.fill,
+            ),
+            Image.asset(
+              'assets/user_icon.png',
+              color: const Color(0xFFBFC2C8),
+              fit: BoxFit.fill,
+            ),
+          ],
+        ),
+      ),
       body: Obx(
         () => Container(
           padding: EdgeInsets.only(
