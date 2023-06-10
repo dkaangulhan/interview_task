@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nano_health/constants/color_constants.dart';
-import 'package:nano_health/view/widgets/login_input_field.dart';
+import 'package:nano_health/view/controllers/auth_controller.dart';
+import 'package:nano_health/view/widgets/login_input_area.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(AuthController());
     return Scaffold(
       body: LayoutBuilder(
         builder: (_, constraints) {

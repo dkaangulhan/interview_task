@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:nano_health/constants/color_constants.dart';
+import 'package:nano_health/view/controllers/product_controller.dart';
 import 'package:nano_health/view/widgets/my_appbar.dart';
 import 'package:nano_health/view/widgets/product_item.dart';
 
@@ -9,6 +9,9 @@ class ProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final longestSide = MediaQuery.of(context).size.longestSide;
+    final paddingHorizontal = longestSide > 600.0 ? 26.0 : 18.0;
+    ProductController productController = Get.find();
     return Scaffold(
       appBar: MyAppBar(
         size: Size(
@@ -28,18 +31,24 @@ class ProductsPage extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
       ]),
-      body: Container(
-        padding: const EdgeInsets.only(
-          left: 12.0,
-          top: 12.0,
-          right: 12.0,
-        ),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: List.generate(
-            20,
-            (index) => const ProductItem(),
+      body: Obx(
+        () => Container(
+          padding: EdgeInsets.only(
+            left: paddingHorizontal,
+            top: 12.0,
+            right: paddingHorizontal,
           ),
+          child: productController.productList.isNotEmpty
+              ? ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: productController.productList.length,
+                  itemBuilder: (_, index) => ProductItem(
+                    product: productController.productList[index],
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ),
         ),
       ),
     );

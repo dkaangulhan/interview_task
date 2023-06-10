@@ -5,11 +5,13 @@ class PillShapedButton extends StatelessWidget {
   final String label;
   final double width;
   final double height;
+  final Function()? onTap;
   const PillShapedButton({
     super.key,
     required this.label,
     this.width = 300.0,
     this.height = 75.0,
+    this.onTap,
   });
 
   @override
@@ -25,7 +27,7 @@ class PillShapedButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
           splashColor: myThemeBlueDarker,
           child: Center(
             child: Text(

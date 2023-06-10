@@ -5,9 +5,11 @@ class MyTextField extends StatefulWidget {
   final String hintText;
   final bool isPassword;
   final double marginBottom;
+  final TextEditingController textEditingController;
   const MyTextField({
     super.key,
     required this.hintText,
+    required this.textEditingController,
     this.marginBottom = 0.0,
     this.isPassword = false,
   });
@@ -26,6 +28,7 @@ class _MyTextFieldState extends State<MyTextField> {
         bottom: widget.marginBottom,
       ),
       child: TextField(
+        controller: widget.textEditingController,
         decoration: InputDecoration(
           labelText: widget.hintText,
           enabledBorder: const UnderlineInputBorder(

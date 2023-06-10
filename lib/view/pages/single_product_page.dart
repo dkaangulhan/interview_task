@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nano_health/constants/color_constants.dart';
 import 'package:nano_health/constants/sample_constants.dart';
-import 'package:nano_health/utils/slice_text.dart';
+import 'package:nano_health/data/models/product_model.dart';
+import 'package:nano_health/view/controllers/product_controller.dart';
 import 'package:nano_health/view/widgets/pill_shaped_button.dart';
+import 'package:nano_health/view/widgets/star_builder.dart';
 
 class SingleProductPage extends StatelessWidget {
-  const SingleProductPage({super.key});
+  const SingleProductPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +45,14 @@ class SingleProductPage extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       BorderIcon(
                         iconData: Icons.arrow_back,
+                        onTap: () {
+                          Get.back();
+                        },
                       ),
-                      BorderIcon(iconData: Icons.more_vert)
+                      const BorderIcon(iconData: Icons.more_vert),
                     ],
                   ),
                   const SizedBox(
@@ -130,15 +137,17 @@ class _PageBuilderState extends State<PageBuilder>
 
   @override
   Widget build(BuildContext context) {
+    ProductController productController = Get.find();
+    ProductModel? product = productController.currentProduct;
     return Stack(
       children: [
         Container(
           width: Get.width,
           height: Get.height - (bottomSheetHeight - bsBorderRadius),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                'assets/single_product_image_sample.png',
+              image: NetworkImage(
+                product!.image,
               ),
               fit: BoxFit.cover,
             ),
@@ -147,96 +156,130 @@ class _PageBuilderState extends State<PageBuilder>
         //Bottom sheet
         Positioned(
           bottom: 0.0,
-          child: Container(
-            width: Get.width,
-            height: bottomSheetHeight,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(bsBorderRadius),
-                topRight: Radius.circular(bsBorderRadius),
-              ),
-              boxShadow: const <BoxShadow>[
-                BoxShadow(
-                  blurRadius: 8.0,
-                  color: myThemeGrey,
-                )
-              ],
-            ),
-            child: Column(
-              children: [
-                //  Expand icon
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isBSOpen = !isBSOpen;
-                      _controller.forward(from: 0);
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.transparent,
-                    child: Icon(
-                      isBSOpen ? Icons.expand_more : Icons.expand_less,
-                      color: myThemeBlue,
-                      size: 32.0,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      BorderIcon(
-                        iconData: Icons.ios_share,
-                        color: myThemeBlue,
-                        size: 42.0,
-                      ),
-                      SizedBox(
-                        width: 40.0,
-                      ),
-                      Expanded(
-                        child: PillShapedButton(
-                          label: 'Order Now',
-                          height: 42.0,
-                        ),
-                      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.white.withAlpha(120),
+                      Colors.white.withAlpha(60),
+                      Colors.transparent,
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 14.0,
-                ),
-                //  Description
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      children: const [
-                        Text(
-                          'Description',
-                          style: TextStyle(
-                            color: myThemeGrey,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 14.0,
-                        ),
-                        Text(
-                          '$PRODUCT_DESCRIPTION$PRODUCT_DESCRIPTION$PRODUCT_DESCRIPTION',
-                        ),
-                      ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 27.0, vertical: 8.0),
+                  child: Text(
+                    '${product.price} AED',
+                    style: const TextStyle(
+                      color: Color(0xFF2A404B),
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                isBSOpen ? const _BSReviewPart() : const SizedBox(),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 5.0,
+              ),
+              Container(
+                width: Get.width,
+                height: bottomSheetHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(bsBorderRadius),
+                    topRight: Radius.circular(bsBorderRadius),
+                  ),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      blurRadius: 8.0,
+                      color: myThemeGrey,
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    //  Expand icon
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isBSOpen = !isBSOpen;
+                          _controller.forward(from: 0);
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.transparent,
+                        child: Icon(
+                          isBSOpen ? Icons.expand_more : Icons.expand_less,
+                          color: myThemeBlue,
+                          size: 32.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          BorderIcon(
+                            iconData: Icons.ios_share,
+                            color: myThemeBlue,
+                            size: 42.0,
+                          ),
+                          SizedBox(
+                            width: 40.0,
+                          ),
+                          Expanded(
+                            child: PillShapedButton(
+                              label: 'Order Now',
+                              height: 42.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 14.0,
+                    ),
+                    //  Description
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: ListView(
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            const Text(
+                              'Description',
+                              style: TextStyle(
+                                color: myThemeGrey,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 14.0,
+                            ),
+                            Text(
+                              product.description,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    bottomSheetHeight == bsOpenHeight
+                        ? const _BSReviewPart()
+                        : const SizedBox(),
+                  ],
+                ),
+              ),
+            ],
           ),
         )
       ],
@@ -252,6 +295,8 @@ class _BSReviewPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProductController productController = Get.find();
+    ProductModel? product = productController.currentProduct;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -270,10 +315,10 @@ class _BSReviewPart extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                     child: Text(
-                  'Reviews (100)',
-                  style: TextStyle(
+                  'Reviews (${product!.rating.count})',
+                  style: const TextStyle(
                     color: myThemeGrey,
                     fontSize: 16.0,
                   ),
@@ -284,9 +329,9 @@ class _BSReviewPart extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      const Text(
-                        '4.33',
-                        style: TextStyle(
+                      Text(
+                        '${product.rating.rate}',
+                        style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -294,15 +339,7 @@ class _BSReviewPart extends StatelessWidget {
                       const SizedBox(
                         width: 8.0,
                       ),
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) => const Icon(
-                            Icons.star,
-                            color: myThemeGold,
-                          ),
-                        ),
-                      ),
+                      StarBuilder(rating: product.rating.rate)
                     ],
                   ),
                 ),
@@ -319,11 +356,13 @@ class BorderIcon extends StatelessWidget {
   final IconData iconData;
   final Color color;
   final double size;
+  final Function()? onTap;
   const BorderIcon({
     super.key,
     required this.iconData,
     this.color = myThemeBlueDarker,
     this.size = 32.0,
+    this.onTap,
   });
 
   @override
@@ -331,14 +370,20 @@ class BorderIcon extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: kElevationToShadow[4],
         borderRadius: BorderRadius.circular(size / 3),
       ),
-      child: Icon(
-        iconData,
-        color: color,
+      child: Material(
+        child: InkWell(
+          onTap: onTap,
+          child: Icon(
+            iconData,
+            color: color,
+          ),
+        ),
       ),
     );
   }
